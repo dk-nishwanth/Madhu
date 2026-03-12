@@ -6,6 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useSpring, AnimatePresence, useTransform } from 'motion/react';
 import { Menu, X, ChevronRight, ChevronLeft, ArrowDown, Linkedin, Instagram, Folder } from 'lucide-react';
+import { useForm, ValidationError } from '@formspree/react';
 import Blog from './components/Blog';
 import { trackEvent, trackProjectView, trackContactFormSubmit, trackSectionView } from './utils/analytics';
 
@@ -1452,14 +1453,17 @@ const CTA = () => {
 };
 
 const ContactSection = () => {
-  const [formState, setFormState] = useState({ name: '', email: '', message: '' });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [state, handleSubmit] = useForm("xaqpjnwd");
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
     trackContactFormSubmit();
-    setTimeout(() => setIsSubmitted(false), 5000);
+    await handleSubmit(e);
+  };
+
+  const resetForm = () => {
+    setFormData({ name: '', email: '', message: '' });
   };
 
   return (
@@ -1513,56 +1517,66 @@ const ContactSection = () => {
             </div>
             
             <AnimatePresence mode="wait">
-              {!isSubmitted ? (
+              {!state.succeeded ? (
                 <motion.form 
                   key="form"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  onSubmit={handleSubmit} 
+                  onSubmit={onSubmit} 
                   className="space-y-8 relative z-10"
                 >
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest uppercase opacity-40">NAME</label>
+                    <label htmlFor="name" className="text-[10px] font-bold tracking-widest uppercase opacity-40">NAME</label>
                     <input 
+                      id="name"
+                      name="name"
                       type="text" 
                       required
                       placeholder="Your name"
                       className="w-full bg-transparent border-b border-untold-ink/10 py-4 focus:outline-none focus:border-untold-accent transition-colors font-medium"
-                      value={formState.name}
-                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
+                    <ValidationError prefix="Name" field="name" errors={state.errors} />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest uppercase opacity-40">EMAIL</label>
+                    <label htmlFor="email" className="text-[10px] font-bold tracking-widest uppercase opacity-40">EMAIL</label>
                     <input 
+                      id="email"
+                      name="email"
                       type="email" 
                       required
                       placeholder="Your email address"
                       className="w-full bg-transparent border-b border-untold-ink/10 py-4 focus:outline-none focus:border-untold-accent transition-colors font-medium"
-                      value={formState.email}
-                      onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
+                    <ValidationError prefix="Email" field="email" errors={state.errors} />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold tracking-widest uppercase opacity-40">MESSAGE</label>
+                    <label htmlFor="message" className="text-[10px] font-bold tracking-widest uppercase opacity-40">MESSAGE</label>
                     <textarea 
+                      id="message"
+                      name="message"
                       required
                       rows={4}
                       placeholder="Tell me about your project"
                       className="w-full bg-transparent border-b border-untold-ink/10 py-4 focus:outline-none focus:border-untold-accent transition-colors font-medium resize-none"
-                      value={formState.message}
-                      onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     />
+                    <ValidationError prefix="Message" field="message" errors={state.errors} />
                   </div>
 
                   <button 
                     type="submit"
-                    className="w-full bg-untold-ink text-white py-6 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-untold-accent transition-colors shadow-xl"
+                    disabled={state.submitting}
+                    className="w-full bg-untold-ink text-white py-6 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-untold-accent transition-colors shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    SEND MESSAGE
+                    {state.submitting ? 'SENDING...' : 'SEND MESSAGE'}
                   </button>
                 </motion.form>
               ) : (
@@ -1578,7 +1592,11 @@ const ContactSection = () => {
                   <h3 className="text-3xl font-bold tracking-tighter">MESSAGE SENT!</h3>
                   <p className="opacity-60 max-w-[240px]">Thanks for reaching out. I'll get back to you as soon as possible.</p>
                   <button 
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={() => {
+                      resetForm();
+                      // Reset Formspree state by reloading or using a key change
+                      window.location.reload();
+                    }}
                     className="text-xs font-bold tracking-widest uppercase underline underline-offset-8"
                   >
                     SEND ANOTHER
