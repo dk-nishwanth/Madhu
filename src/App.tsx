@@ -1871,7 +1871,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
 // --- Main App ---
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="relative cursor-none">
