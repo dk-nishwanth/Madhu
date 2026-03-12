@@ -320,7 +320,7 @@ const Hero = () => {
       {/* Background Image (Subtle) */}
       <div className="absolute inset-0 z-0 opacity-5 pointer-events-none">
         <img 
-          src="/ChatGPT Image Mar 12, 2026, 03_52_07 PM.png" 
+          src="/madhu-profile.png" 
           alt="Background" 
           className="w-full h-full object-cover grayscale"
           referrerPolicy="no-referrer"
@@ -339,7 +339,7 @@ const Hero = () => {
               <span className="shrink-0">madhu</span>
               <span className="inline-block w-[24vw] h-[18vw] sm:w-[20vw] sm:h-[14vw] md:w-[15vw] md:h-[10vw] bg-gray-200 rounded-lg overflow-hidden relative group mx-2 md:mx-8 shrink-0 shadow-xl border border-white/20">
                 <img 
-                  src="/ChatGPT Image Mar 12, 2026, 03_52_07 PM.png" 
+                  src="/madhu-profile.png" 
                   alt="Madhu" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   referrerPolicy="no-referrer"
@@ -1825,7 +1825,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           className="w-full h-full rounded-2xl overflow-hidden shadow-2xl relative z-10"
         >
           <img 
-            src="/ChatGPT Image Mar 12, 2026, 03_52_07 PM.png" 
+            src="/madhu-profile.png" 
             alt="Loading" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
